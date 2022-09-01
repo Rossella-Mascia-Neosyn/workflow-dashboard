@@ -21,6 +21,8 @@ import {
 import type { AnyStateMachine } from './types';
 import { uniq } from './utils';
 
+import BaseJson from './__tests__/jsonTest/init/baseInit.json';
+
 
 function buildGistFixupImportsText(usedXStateGistIdentifiers: string[]) {
   const rootNames: string[] = [];
@@ -106,7 +108,7 @@ const editorPanelMachine = editorPanelModel.createMachine(
             on: {
               EDITOR_READY: [
                 {
-                  cond: 'isGist',
+                  // cond: 'isGist',
                   target: 'fixing_gist_imports',
                   actions: editorPanelModel.assign({
                     monacoRef: (_, e) => e.monacoRef,
@@ -174,6 +176,7 @@ const editorPanelMachine = editorPanelModel.createMachine(
         tags: ['visualizing'],
         invoke: {
           src: async (ctx) => {
+            debugger;
             let remap = handlerRemap(JSON.parse(ctx.code))
             const machine = createMachine(remap)
             let machines = [];
@@ -236,8 +239,6 @@ const editorPanelMachine = editorPanelModel.createMachine(
   },
   {
     guards: {
-      isGist: (ctx) =>
-        ctx.sourceRef.getSnapshot()!.context.sourceProvider === 'gist',
       isSyntaxError: (_, e: any) => e.data instanceof SyntaxError,
     },
     actions: {
@@ -315,7 +316,7 @@ export const EditorPanel: React.FC<{
     },
     context: {
       ...editorPanelModel.initialContext,
-      code: 'value',
+      code: JSON.stringify(BaseJson, null, 2),
       // sourceRef: sourceService,
     },
   });
@@ -334,7 +335,7 @@ export const EditorPanel: React.FC<{
           {/* This extra div acts as a placeholder that is supposed to stretch while EditorWithXStateImports lazy-loads (thanks to `1fr` on the grid) */}
           {/* <div style={{ minHeight: 0, minWidth: 0 }}> */}
           <EditorWithXStateImports
-            value={'value'}
+            value={JSON.stringify(BaseJson, null, 2)}
             onMount={(standaloneEditor, monaco) => {
               send({
                 type: 'EDITOR_READY',

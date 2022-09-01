@@ -47,10 +47,11 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ handlePanelView, isShowP
       ? state.context.serviceDataMap[state.context.currentSessionId!]?.machine
       : undefined;
   });
+  debugger;
   const isLayoutPending = useSelector(simService, (state) =>
     state.hasTag('layoutPending'),
   );
-
+  console.log(isLayoutPending, 'isLayoutPending')
   const digraph = useMemo(
     //@ts-ignore
     () => (machine ? toDirectedGraph(machine) : undefined),

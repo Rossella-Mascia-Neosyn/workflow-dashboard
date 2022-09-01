@@ -207,6 +207,7 @@ export const handlerRemap = (data: MoreComplexData): any => {
     return {
         id: data.id,
         initial: data.initialState,
+        predictableActionArguments: true,
         type: "compound",
         version: String(data.version),
         states,
