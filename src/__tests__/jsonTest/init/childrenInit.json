@@ -1,0 +1,105 @@
+{
+    "id": "WORKFLOW_A",
+    "version": 1,
+    "deprecated": false,
+    "states": [
+        {
+            "type": "SimpleState",
+            "id": "A"
+        },
+        {
+            "type": "ForEachChildState",
+            "id": "CHILDREN_SIGNATURE",
+            "eventToChild": "SIGNED",
+            "continueEvent": "SIGN_RECEIPT",
+            "koEvent": "KO_HANDLING_SIGN",
+            "doneEvent": "POST_CHILDREN_SIGNATURE_OK"
+        },
+        {
+            "type": "ActionState",
+            "id": "POST_SIGNATURE_FAIL",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        }
+    ],
+    "transitions": [
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE",
+            "target": "CHILDREN_SIGNATURE",
+            "event": "SIGNATURE_OK",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CONTRACT_SIGNED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHILDREN_SIGNATURE",
+            "target": "POST_SIGNATURE_FAIL",
+            "event": "KO_HANDLING_SIGN",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "POST_SIGNATURE_FAIL"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "END_HANDOVER_OK_SIGNATURE",
+            "target": "CHILDREN_SIGNATURE",
+            "event": "HANDOVER_COMPLETED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CONTRACT_SIGNED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/document/archive",
+                    "body": "{}",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "method": "POST"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "ARCHIVED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "A",
+            "target": "CHILDREN_SIGNATURE",
+            "event": "A_B"
+        }
+    ],
+    "initialState": "A",
+    "endStates": [
+        "POST_SIGNATURE_FAIL"
+    ]
+}

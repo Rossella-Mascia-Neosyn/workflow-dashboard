@@ -1,0 +1,71 @@
+{
+    "id": "CFN_DOSSIER_AT",
+    "initial": "SIMULATION",
+    "states": {
+        "SIMULATION": {
+            "tags": [
+                "SimpleState"
+            ],
+            "type": "atomic",
+            "on": {
+                "SIMULATION_MINIMUM_DATA": {
+                    "target": "MINIMUM_DATA",
+                    "internal": false,
+                    "actions": [],
+                    "type": "external"
+                }
+            }
+        },
+        "MINIMUM_DATA": {
+            "tags": [
+                "SimpleState"
+            ],
+            "type": "atomic",
+            "on": {
+                "MINIMUM_DATA_ADDITIONAL_DATA": {
+                    "target": "ADDITIONAL_DATA",
+                    "internal": false,
+                    "actions": [],
+                    "type": "external"
+                }
+            }
+        },
+        "ADDITIONAL_DATA": {
+            "tags": [
+                "SimpleState"
+            ],
+            "type": "atomic",
+            "on": {
+                "ADDITIONAL_DATA_PERSONAL_DATA": {
+                    "target": "PERSONAL_DATA",
+                    "internal": false,
+                    "actions": [],
+                    "type": "external"
+                }
+            }
+        },
+        "PERSONAL_DATA": {
+            "tags": [
+                "SimpleState"
+            ],
+            "type": "atomic",
+            "on": {
+                "PERSONAL_DATA_CREDIT_DECISION": {
+                    "target": "CREDIT_DECISION",
+                    "internal": false,
+                    "actions": [],
+                    "type": "external"
+                }
+            }
+        },
+        "CREDIT_DECISION": {
+            "tags": [
+                "SimpleState"
+            ],
+            "type": "final",
+            "on": {}
+        }
+    },
+    "type": "compound",
+    "version": "1"
+}

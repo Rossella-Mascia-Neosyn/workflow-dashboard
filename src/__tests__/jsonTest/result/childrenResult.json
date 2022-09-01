@@ -1,0 +1,113 @@
+{
+    "id": "WORKFLOW_A",
+    "initial": "A",
+    "states": {
+        "A": {
+            "tags": [
+                "SimpleState"
+            ],
+            "type": "atomic",
+            "on": {
+                "A_B": {
+                    "target": "CHILDREN_SIGNATURE",
+                    "internal": false,
+                    "actions": [],
+                    "type": "external"
+                }
+            }
+        },
+        "CHILDREN_SIGNATURE": {
+            "tags": "ForEachChildState",
+            "initial": "FOR",
+            "states": {
+                "FOR": {
+                    "tags": [
+                        "ActionState"
+                    ],
+                    "type": "atomic",
+                    "entry": [
+                        {
+                            "type": "NextChildOrExitAction",
+                            "childrenListKey": "CHILDREN_SIGNATURE_CHILDREN",
+                            "nextChildKey": "CHILDREN_SIGNATURE_NEXT_CHILD",
+                            "doneEvent": "POST_CHILDREN_SIGNATURE_OK",
+                            "doEvent": "DO"
+                        }
+                    ],
+                    "on": {
+                        "DO": {
+                            "target": "WAIT",
+                            "internal": false,
+                            "actions": [
+                                {
+                                    "type": "EventToInstanceAction",
+                                    "target": "##CHILDREN_SIGNATURE_NEXT_CHILD##",
+                                    "event": "SIGNED"
+                                }
+                            ],
+                            "type": "external"
+                        }
+                    }
+                },
+                "WAIT": {
+                    "tags": [
+                        "SimpleState"
+                    ],
+                    "type": "atomic",
+                    "on": {
+                        "SIGN_RECEIPT": {
+                            "target": "FOR",
+                            "internal": false,
+                            "actions": [],
+                            "type": "external"
+                        }
+                    }
+                }
+            },
+            "on": {
+                "KO_HANDLING_SIGN": {
+                    "target": "POST_SIGNATURE_FAIL",
+                    "internal": false,
+                    "actions": [
+                        {
+                            "type": "UpdateProductDossierAction",
+                            "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                            "update": "POST_SIGNATURE_FAIL"
+                        },
+                        {
+                            "type": "UpdateDossierAction",
+                            "update": "COMPLETED_IN_ERROR"
+                        }
+                    ],
+                    "type": "external"
+                }
+            },
+            "entry": {
+                "type": "RequestForChildInstancesAction",
+                "childrenListKey": "CHILDREN_SIGNATURE_CHILDREN"
+            }
+        },
+        "POST_SIGNATURE_FAIL": {
+            "tags": [
+                "ActionState"
+            ],
+            "type": "final",
+            "entry": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ],
+            "on": {}
+        }
+    },
+    "type": "compound",
+    "version": "1"
+}

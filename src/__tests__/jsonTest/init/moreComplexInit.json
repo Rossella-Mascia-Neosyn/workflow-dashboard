@@ -1,0 +1,3687 @@
+{
+    "id": "consumer_finance_dossier",
+    "initialState": "START",
+    "endStates": [
+        "COMMON_CUSTOMER_CHECKS_KO",
+        "PRODUCT_CHECKS_KO",
+        "PRODUCT_CHECKS_KO_WITH_MSG",
+        "PRODUCT_CRM_CHECKS_KO",
+        "COMMON_CUSTOMER_CRM_CHECKS_KO",
+        "BUREAU_KO",
+        "PEP_KO",
+        "AML_KO_END",
+        "BOOST/ONB_KO",
+        "RATING_CREDIT_CORE_KO",
+        "PRICE_QUOTATION_KO",
+        "DISBURSEMENT_KO",
+        "SIGNATURE_FAIL",
+        "POST_SIGNATURE_FAIL",
+        "COMPLETED"
+    ],
+    "states": [
+        {
+            "type": "SimpleState",
+            "id": "START",
+            "microfrontendBullet": false
+        },
+        {
+            "type": "SimpleState",
+            "id": "CHECKS_DECISION",
+            "microfrontendBullet": false
+        },
+        {
+            "type": "SimpleState",
+            "id": "PEP_KO"
+        },
+        {
+            "type": "SimpleState",
+            "id": "USER_NAME_SURNAME_FISCALCODE",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "CCC_WITH_NDG",
+            "microfrontendBullet": false,
+            "bulletName": "COMMON_CUSTOMER_CHECKS",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-customer-check.ns-omn-be-omnifoundation.svc.cluster.local:8080/customercheck/v1/check",
+                    "body": "{\"name\":\"##NAME##\",\"surname\":\"##SURNAME##\",\"ndg\":\"##NDG##\",\"fiscalCode\":\"##FISCAL_CODE##\", \"dossierId\":\"$$DOSSIER_ID$$\"}"
+                }
+            ]
+        },
+        {
+            "type": "ActionState",
+            "id": "COMMON_CUSTOMER_CRM_CHECKS",
+            "microfrontendBullet": false,
+            "bulletName": "COMMON_CUSTOMER_CHECKS",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-customer-check.ns-omn-be-omnifoundation.svc.cluster.local:8080/customercheck/v1/check",
+                    "body": "{\"name\":\"##NAME##\",\"surname\":\"##SURNAME##\",\"ndg\":\"##NDG##\",\"fiscalCode\":\"##FISCAL_CODE##\", \"dossierId\":\"$$DOSSIER_ID$$\", \"checkCrm\":true}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "COMMON_CUSTOMER_CRM_CHECKS_KO"
+        },
+        {
+            "type": "SimpleState",
+            "id": "COMMON_CUSTOMER_CRM_CHECKS_SUSPENSIVE",
+            "bulletName": "COMMON_CUSTOMER_CHECKS_SUSPENSIVE",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "PRODUCT_CRM_CHECKS",
+            "microfrontendBullet": false,
+            "bulletName": "PRODUCT_CHECKS",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "GET",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/check/results"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRODUCT_CRM_CHECKS_KO"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRODUCT_CRM_CHECKS_SUSPENSIVE"
+        },
+        {
+            "type": "ActionState",
+            "bulletName": "COMMON_CUSTOMER_CHECKS",
+            "id": "CCC_WITHOUT_NDG",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-customer-check.ns-omn-be-omnifoundation.svc.cluster.local:8080/customercheck/v1/check",
+                    "body": "{\"name\":\"##NAME##\",\"surname\":\"##SURNAME##\",\"ndg\":\"##NDG##\",\"fiscalCode\":\"##FISCAL_CODE##\", \"dossierId\":\"$$DOSSIER_ID$$\"}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "CCC_WITHOUT_NDG_SUSPENSIVE",
+            "bulletName": "COMMON_CUSTOMER_CHECKS_SUSPENSIVE",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "SimpleState",
+            "id": "CCC_WITH_NDG_SUSPENSIVE",
+            "bulletName": "COMMON_CUSTOMER_CHECKS_SUSPENSIVE",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "SimpleState",
+            "id": "COMMON_CUSTOMER_CHECKS_KO"
+        },
+        {
+            "type": "ActionState",
+            "id": "PRODUCT_CHECKS_WITH_NDG",
+            "bulletName": "PRODUCT_CHECKS",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/product-check",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ]
+        },
+        {
+            "type": "ActionState",
+            "id": "PRODUCT_CHECKS_WITHOUT_NDG",
+            "bulletName": "PRODUCT_CHECKS",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/product-check",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ]
+        },
+        {
+            "type": "ActionState",
+            "id": "PRODUCT_CHECKS_KO",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRODUCT_CHECKS_KO_WITH_MSG"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRODUCT_CHECKS_SUSPENSIVE"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRODUCT_CHECKS_ERROR_WITH_NDG",
+            "bulletName": "PRODUCT_CHECKS_ERROR",
+            "recoveryEvent": "TO_PC_ERROR_PRODUCT_CHECKS"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRODUCT_CHECKS_ERROR_WITHOUT_NDG",
+            "bulletName": "PRODUCT_CHECKS_ERROR",
+            "recoveryEvent": "TO_PC_ERROR_PRODUCT_CHECKS"
+        },
+        {
+            "type": "ActionState",
+            "id": "BOOST/ONB",
+            "microfrontendBullet": false,
+            "entryActions": [
+                {
+                    "url": "http://svc-omnichannel-onb-dossier.ns-oco-be-onboarding.svc.cluster.local:8080/onboarddossier/v1/workflow/workflow-type",
+                    "body": "{\"ndg\": \"##NDG##\",  \"tax_code\": \"##FISCAL_CODE##\", \"product\": \"CFN\"}",
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "childTag": null,
+                    "forwardOmcJwt": true,
+                    "expectResponse": true
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "BOOST/ONB_KO"
+        },
+        {
+            "type": "SimpleState",
+            "id": "SIMULATION_WITH_NDG",
+            "bulletName": "SIMULATION"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CREATING_CPI",
+            "bulletName": "CREATING_CPI"
+        },
+        {
+            "type": "SimpleState",
+            "id": "VERIFY_CPI_KO",
+            "bulletName": "VERIFY_CPI_KO"
+        },
+        {
+            "type": "SimpleState",
+            "id": "SIMULATION_WITHOUT_NDG",
+            "bulletName": "SIMULATION"
+        },
+        {
+            "type": "SimpleState",
+            "id": "SIMULATION_CHANGE_PLAN",
+            "bulletName": "SIMULATION",
+            "recoveryEvent": "RECOVER_SIMULATION_CHANGE_PLAN"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CHANGE_PLAN_RESET",
+            "recoveryEvent": "RECOVER_CHANGE_PLAN_RESET"
+        },
+        {
+            "type": "ActionState",
+            "id": "START_CREDIT_CORE",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "PUT",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/inhibited-channels",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "[]",
+                    "expectEvent": false,
+                    "expectResponse": true,
+                    "forwardOmcJwt": true
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/credit-segment/$$DOSSIER_ID$$/update",
+                    "body": "{}"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/start-credit-core",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ]
+        },
+        {
+            "type": "ActionState",
+            "id": "BUREAU_CREDIT_CORE",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/bureau-credit-core",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ],
+            "recoveryEvent": "TO_BUREAU_CREDIT_CORE"
+        },
+        {
+            "type": "ActionState",
+            "id": "CREDIT_LINE_CREDIT_CORE",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/credit-line-credit-core",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ],
+            "recoveryEvent": "RECOVER_CREDIT_LINE_CREDIT_CORE"
+        },
+        {
+            "type": "SimpleState",
+            "id": "INCOME"
+        },
+        {
+            "type": "SimpleState",
+            "id": "BUREAU_CREDIT_CORE_RESULT",
+            "recoveryEvent": "TO_BUREAU_CREDIT_CORE"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CREDIT_LINE_CREDIT_CORE_RESULT",
+            "recoveryEvent": "RECOVER_CREDIT_LINE"
+        },
+        {
+            "type": "ActionState",
+            "id": "BUREAU_KO",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "OVER_INDEB",
+            "recoveryEvent": "RECOVER_CREDIT_LINE"
+        },
+        {
+            "type": "SimpleState",
+            "id": "APPL_FORM",
+            "recoveryEvent": "RECOVER_CREDIT_LINE"
+        },
+        {
+            "type": "ActionState",
+            "id": "RATING_CREDIT_CORE",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/rating-credit-core",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ],
+            "recoveryEvent": "RECOVER_RATING_CREDIT_CORE"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CPI_SUMMARY"
+        },
+        {
+            "type": "SimpleState",
+            "id": "DEMAND_AND_NEEDS"
+        },
+        {
+            "type": "SimpleState",
+            "id": "DN_INCOHERENT_KO"
+        },
+        {
+            "type": "SimpleState",
+            "id": "RATING_CREDIT_CORE_RESULT"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CREDIT_CREDIT_CORE_RESULT"
+        },
+        {
+            "type": "ActionState",
+            "id": "RATING_CREDIT_CORE_KO",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ActionState",
+            "id": "CREDIT_CREDIT_CORE",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/credit-credit-core",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRICE_QUOTATION",
+            "bulletName": "PRICE_QUOTATION"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PRICE_QUOTATION_AFTER_QM",
+            "bulletName": "PRICE_QUOTATION"
+        },
+        {
+            "type": "ActionState",
+            "id": "PRICE_QUOTATION_KO",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "COUNTER_OFFER"
+        },
+        {
+            "type": "SimpleState",
+            "id": "GET_ACCOUNTS"
+        },
+        {
+            "type": "SimpleState",
+            "id": "SELECT_ACCOUNT"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PROOF_OF_INCOME"
+        },
+        {
+            "type": "ActionState",
+            "id": "PSD2_HANDOVER_START",
+            "bulletName": "START_HANDOVER",
+            "microfrontendBullet": true,
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/handover",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"canContinue\":false,\"activateForCustomer\":false,\"checkDigitalized\":false}"
+                }
+            ],
+            "recoveryEvent": "PSD2_RECOVERY"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PSD2",
+            "recoveryEvent": "PSD2_RECOVERY"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PSD2_CHECK",
+            "recoveryEvent": "PSD2_RECOVERY"
+        },
+        {
+            "type": "SimpleState",
+            "id": "PSD2_INCONSISTENT",
+            "recoveryEvent": "PSD2_RECOVERY"
+        },
+        {
+            "type": "SimpleState",
+            "id": "KO_PSD2_HANDOVER_END",
+            "bulletName": "END_HANDOVER",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "SimpleState",
+            "id": "OK_PSD2_HANDOVER_END",
+            "bulletName": "END_HANDOVER",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "SimpleState",
+            "id": "PSD2_INCONSISTENT_HANDOVER_END",
+            "bulletName": "END_HANDOVER",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "SimpleState",
+            "id": "DOCUMENT_UPLOAD_RECAP",
+            "microfrontendBullet": true,
+            "tag": "UPLOAD_DOC"
+        },
+        {
+            "type": "SimpleState",
+            "id": "DOCUMENT_UPLOAD_RECAP_POST_SIGN",
+            "bulletName": "DOCUMENT_UPLOAD_RECAP",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "SimpleState",
+            "id": "AML"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CHECK_POI"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CHECK_POI_POST_SIGN",
+            "bulletName": "CHECK_POI"
+        },
+        {
+            "type": "ActionState",
+            "id": "AML_KO_END",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "AML_KO_MA"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CPI_QUESTIONNAIRE",
+            "recoveryEvent": "RECOVER_CPI_QUESTIONNAIRE"
+        },
+        {
+            "type": "SimpleState",
+            "id": "CPI_BENEFICIARY"
+        },
+        {
+            "type": "SimpleState",
+            "id": "HS_VALIDATION_ERROR"
+        },
+        {
+            "type": "SimpleState",
+            "id": "HS_VALIDATION_BLOCK"
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_PRECONTRACT_KO",
+            "bulletName": "SEND_PRECONTRACT",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_PRECONTRACT_ABANDON",
+            "bulletName": "SEND_PRECONTRACT",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_PRECONTRACT_POI",
+            "bulletName": "SEND_PRECONTRACT",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_PRECONTRACT_SELECT_ACCOUNT",
+            "bulletName": "SEND_PRECONTRACT",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_PRECONTRACT_AML",
+            "bulletName": "SEND_PRECONTRACT",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_PRECONTRACT_AFTER_QM",
+            "bulletName": "SEND_PRECONTRACT",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_DN_WITHDRAWN",
+            "bulletName": "SEND_SURVEY",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "SEND_MEDIC_WITHDRAWN",
+            "bulletName": "SEND_SURVEY",
+            "microfrontendBullet": true
+        },
+        {
+            "type": "ActionState",
+            "id": "DISBURSEMENT_INIT",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "PUT",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/inhibited-channels",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "[\"GIMB\", \"MOBILE\", \"UCD\", \"MY_AGENT\", \"SELF\", \"BACK_OFFICE\", \"BRANCH\"]",
+                    "expectEvent": false,
+                    "expectResponse": true,
+                    "forwardOmcJwt": true
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/disbursement/init-disbursement",
+                    "body": "{\"dossierId\":$$DOSSIER_ID$$}"
+                }
+            ],
+            "recoveryEvent": "RECOVER_DISBURSEMENT_INIT"
+        },
+        {
+            "type": "SimpleState",
+            "id": "DISBURSEMENT_WAITING"
+        },
+        {
+            "type": "ActionState",
+            "id": "DISBURSEMENT_KO",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "DISBURSEMENT_SUSPENDED"
+        },
+        {
+            "type": "SimpleState",
+            "id": "DISBURSEMENT_POSTPONED"
+        },
+        {
+            "type": "SimpleState",
+            "id": "DISBURSEMENT_OK_INSTANT"
+        },
+        {
+            "type": "SimpleState",
+            "id": "DISBURSEMENT_OK_SEPA"
+        },
+        {
+            "type": "ActionState",
+            "id": "SIGNATURE_SELECT",
+            "microfrontendBullet": true,
+            "tag": "TO_SIGN",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-bvi-dossier.ns-oco-be-onboarding.svc.cluster.local:8080/bvidossier/v1/bvidossier/$$DOSSIER_ID$$/DMB",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-signature-manager.ns-omn-be-omnifoundation.svc.cluster.local:8080/signature/manager/v1/signature",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\",\"category\":\"CONTRACT\", \"templateId\": \"IL_CONFERMA_CFN_EMAIL\", \"signedTemplateId\": \"IL_CONFERMA_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "SIGNATURE_PAPER_UPLOAD_RECAP",
+            "microfrontendBullet": true,
+            "bulletName": "DOCUMENT_UPLOAD_RECAP"
+        },
+        {
+            "type": "ActionState",
+            "id": "SIGNATURE_START_HANDOVER",
+            "microfrontendBullet": true,
+            "bulletName": "START_HANDOVER",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/handover",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"canContinue\":false,\"activateForCustomer\":false,\"checkDigitalized\":false}",
+                    "expectResponse": true,
+                    "forwardOmcJwt": true
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "CERTIFICATE_BULLET",
+            "microfrontendBullet": true,
+            "recoveryEvent": "TO_SIGNATURE_SELECT_FROM_SIGNATURE",
+            "tag": "TO_SIGN"
+        },
+        {
+            "type": "SimpleState",
+            "id": "SIGNATURE",
+            "microfrontendBullet": true,
+            "recoveryEvent": "TO_SIGNATURE_SELECT_FROM_SIGNATURE",
+            "tag": "TO_SIGN"
+        },
+        {
+            "type": "SimpleState",
+            "id": "END_HANDOVER_OK_SIGNATURE",
+            "microfrontendBullet": true,
+            "bulletName": "END_HANDOVER",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/handover/end/check",
+                    "expectEvent": true,
+                    "expectResponse": false,
+                    "forwardOmcJwt": true
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "END_HANDOVER_KO_SIGNATURE",
+            "microfrontendBullet": true,
+            "bulletName": "END_HANDOVER",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/handover/end/check",
+                    "expectEvent": true,
+                    "expectResponse": false,
+                    "forwardOmcJwt": true
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "END_HANDOVER_CONTINUE_SIGNATURE",
+            "microfrontendBullet": true,
+            "bulletName": "END_HANDOVER",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/handover/end/check",
+                    "expectEvent": true,
+                    "expectResponse": false,
+                    "forwardOmcJwt": true
+                }
+            ]
+        },
+        {
+            "type": "ActionState",
+            "id": "SIGNATURE_FAIL",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "SimpleState",
+            "id": "COMPLETED"
+        },
+        {
+            "type": "ActionState",
+            "id": "POST_SIGNATURE_FAIL",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ForEachChildState",
+            "id": "CHILDREN_SIGNATURE",
+            "eventToChild": "SIGNED",
+            "continueEvent": "SIGN_RECEIPT",
+            "koEvent": "KO_HANDLING_SIGN",
+            "doneEvent": "POST_CHILDREN_SIGNATURE_OK"
+        },
+        {
+            "type": "ActionState",
+            "id": "START_BIN",
+            "microfrontendBullet": false,
+            "bulletName": "START_BIN",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-cpi.ns-old-be-consumerfinance.svc.cluster.local:8080/cpi/v1/cpi/start-bin",
+                    "body": "{ \"parentDossierId\":\"$$DOSSIER_ID$$\" }"
+                }
+            ]
+        },
+        {
+            "type": "ActionState",
+            "id": "DOC_OR_DISBURSEMENT",
+            "bulletName": "DOC_OR_DISBURSEMENT",
+            "entryActions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/doc-or-disbursement",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ForEachChildState",
+            "id": "BROADCAST_COMPLETED",
+            "eventToChild": "COMPLETED",
+            "continueEvent": "COMPLETED",
+            "koEvent": "KO_HANDLING_COMPLETED",
+            "doneEvent": "TO_COMPLETED"
+        },
+        {
+            "type": "SimpleState",
+            "id": "WAITING_FOR_DEROGATION_APPROVAL"
+        },
+        {
+            "type": "SimpleState",
+            "id": "BACK_OFFICE_POST_SIGN",
+            "microfrontendBullet": true,
+            "bulletName": "DOCUMENT_UPLOAD_RECAP"
+        }
+    ],
+    "transitions": [
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_LINE_CREDIT_CORE_RESULT",
+            "target": "CREDIT_LINE_CREDIT_CORE",
+            "event": "RECOVER_CREDIT_LINE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "OVER_INDEB",
+            "target": "CREDIT_LINE_CREDIT_CORE",
+            "event": "RECOVER_CREDIT_LINE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "APPL_FORM",
+            "target": "CREDIT_LINE_CREDIT_CORE",
+            "event": "RECOVER_CREDIT_LINE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2",
+            "target": "PROOF_OF_INCOME",
+            "event": "PSD2_RECOVERY"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_CHECK",
+            "target": "PROOF_OF_INCOME",
+            "event": "PSD2_RECOVERY"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_INCONSISTENT",
+            "target": "PROOF_OF_INCOME",
+            "event": "PSD2_RECOVERY"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_HANDOVER_START",
+            "target": "PROOF_OF_INCOME",
+            "event": "PSD2_RECOVERY"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BUREAU_CREDIT_CORE",
+            "target": "BUREAU_CREDIT_CORE",
+            "event": "TO_BUREAU_CREDIT_CORE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BUREAU_CREDIT_CORE_RESULT",
+            "target": "BUREAU_CREDIT_CORE",
+            "event": "TO_BUREAU_CREDIT_CORE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE",
+            "target": "SIGNATURE_SELECT",
+            "event": "TO_SIGNATURE_SELECT_FROM_SIGNATURE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BROADCAST_COMPLETED",
+            "target": "COMPLETED",
+            "event": "TO_COMPLETED",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/bvi-reb-link",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}",
+                    "expectEvent": true,
+                    "expectResponse": false,
+                    "forwardOmcJwt": true
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "LOAN_ACTIVE"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CERTIFICATE_BULLET",
+            "target": "SIGNATURE_SELECT",
+            "event": "TO_SIGNATURE_SELECT_FROM_SIGNATURE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "START",
+            "target": "CHECKS_DECISION",
+            "event": "USER_WITH_NDG",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "PUT",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/inhibited-channels",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "[\"GIMB\", \"MOBILE\", \"MY_AGENT\", \"SELF\", \"BACK_OFFICE\"]",
+                    "expectEvent": false,
+                    "expectResponse": true,
+                    "forwardOmcJwt": true
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "method": "GET",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/decision-about-checks",
+                    "expectResponse": true,
+                    "forwardOmcJwt": true
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "PROCESSING"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECKS_DECISION",
+            "target": "CCC_WITH_NDG",
+            "event": "USER_WITH_NDG"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECKS_DECISION",
+            "target": "COMMON_CUSTOMER_CRM_CHECKS",
+            "event": "TO_CRM_CHECKS"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "COMMON_CUSTOMER_CRM_CHECKS",
+            "target": "PRODUCT_CRM_CHECKS",
+            "event": "COMMON_CHECK_OK"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "COMMON_CUSTOMER_CRM_CHECKS",
+            "target": "COMMON_CUSTOMER_CRM_CHECKS_KO",
+            "event": "COMMON_CHECK_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "COMMON_CUSTOMER_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "COMMON_CUSTOMER_CRM_CHECKS",
+            "target": "COMMON_CUSTOMER_CRM_CHECKS_SUSPENSIVE",
+            "event": "COMMON_CHECK_SUSPENSIVE",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "COMMON_CUSTOMER_CRM_CHECKS_SUSPENSIVE",
+            "target": "COMMON_CUSTOMER_CRM_CHECKS",
+            "event": "CHECKS_SOLVED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CRM_CHECKS",
+            "target": "SIMULATION_WITH_NDG",
+            "event": "PRODUCT_CHECKS_SIMULATION_WITH_NDG",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CRM_CHECKS",
+            "target": "PRODUCT_CHECKS_KO_WITH_MSG",
+            "event": "PRODUCT_CHECKS_END_WITH_MSG",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PRODUCT_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CRM_CHECKS",
+            "target": "CCC_WITH_NDG",
+            "event": "USER_WITH_NDG",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "PROCESSING"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CRM_CHECKS",
+            "target": "PRODUCT_CRM_CHECKS_KO",
+            "event": "PRODUCT_CHECKS_END",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PRODUCT_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CRM_CHECKS",
+            "target": "PRODUCT_CRM_CHECKS_SUSPENSIVE",
+            "event": "PRODUCT_CHECKS_SUSPENSIVE",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CRM_CHECKS_SUSPENSIVE",
+            "target": "PRODUCT_CRM_CHECKS",
+            "event": "SUSPENSIVE_TASK_RETRY",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "PROCESSING"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PROCESSING"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECKS_DECISION",
+            "target": "SIMULATION_WITH_NDG",
+            "event": "SKIP_CHECKS"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITH_NDG",
+            "target": "CCC_WITH_NDG_SUSPENSIVE",
+            "event": "COMMON_CHECK_SUSPENSIVE",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITHOUT_NDG",
+            "target": "CCC_WITHOUT_NDG_SUSPENSIVE",
+            "event": "COMMON_CHECK_SUSPENSIVE_WITHOUT_NDG",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITH_NDG",
+            "target": "PRODUCT_CHECKS_WITH_NDG",
+            "event": "COMMON_CHECK_OK"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITH_NDG",
+            "target": "COMMON_CUSTOMER_CHECKS_KO",
+            "event": "COMMON_CHECK_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "COMMON_CUSTOMER_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITHOUT_NDG_SUSPENSIVE",
+            "target": "CCC_WITHOUT_NDG",
+            "event": "CHECKS_SOLVED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITH_NDG_SUSPENSIVE",
+            "target": "CCC_WITH_NDG",
+            "event": "CHECKS_SOLVED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITH_NDG",
+            "target": "PRODUCT_CHECKS_KO",
+            "event": "PRODUCT_CHECKS_END",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PRODUCT_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITH_NDG",
+            "target": "PRODUCT_CHECKS_KO_WITH_MSG",
+            "event": "PRODUCT_CHECKS_END_WITH_MSG",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PRODUCT_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITH_NDG",
+            "target": "PRODUCT_CHECKS_ERROR_WITH_NDG",
+            "event": "PRODUCT_CHECKS_ERROR"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_ERROR_WITH_NDG",
+            "target": "PRODUCT_CHECKS_WITH_NDG",
+            "event": "TO_PC_ERROR_PRODUCT_CHECKS"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITH_NDG",
+            "target": "PRODUCT_CHECKS_SUSPENSIVE",
+            "event": "PRODUCT_CHECKS_SUSPENSIVE",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_SUSPENSIVE",
+            "target": "PRODUCT_CHECKS_WITH_NDG",
+            "event": "SUSPENSIVE_TASK_RETRY",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "PROCESSING"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PROCESSING"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITH_NDG",
+            "target": "SIMULATION_WITH_NDG",
+            "event": "PRODUCT_CHECKS_SIMULATION_WITH_NDG",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITH_NDG",
+            "target": "SIMULATION_WITH_NDG",
+            "event": "PC_WITH_NDG_SIMULATION_WITH_NDG",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_WITH_NDG",
+            "target": "BOOST/ONB",
+            "event": "SIMULATION_WITH_NDG_WITH_CPI_BOOST/ONB",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_WITH_NDG",
+            "target": "PEP_KO",
+            "event": "SIMULATION_WITH_NDG_WITH_CPI_PEP_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PEP_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_WITH_NDG",
+            "target": "BOOST/ONB",
+            "event": "SIMULATION_WITH_NDG_BOOST/ONB",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "BOOST/ONB",
+            "event": "CONTACTS_VERIFIED",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/communication/$$DOSSIER_ID$$/send-mail-ntb",
+                    "expectResponse": false,
+                    "forwardOmcJwt": true
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BOOST/ONB",
+            "target": "START_CREDIT_CORE",
+            "event": "WAITING_SIGNATURE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BOOST/ONB",
+            "target": "BOOST/ONB_KO",
+            "event": "ONB_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "BOOST/ONB_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BOOST/ONB",
+            "target": "BOOST/ONB_KO",
+            "event": "BOOST_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "BOOST/ONB_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "START",
+            "target": "SIMULATION_WITHOUT_NDG",
+            "event": "USER_WITHOUT_NDG",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "PROCESSING"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_WITHOUT_NDG",
+            "target": "USER_NAME_SURNAME_FISCALCODE",
+            "event": "TO_IDENTIFICATION_WITHOUT_CPI",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_WITHOUT_NDG",
+            "target": "USER_NAME_SURNAME_FISCALCODE",
+            "event": "TO_IDENTIFICATION",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "USER_NAME_SURNAME_FISCALCODE",
+            "target": "CCC_WITHOUT_NDG",
+            "event": "USER_DATA_INSERT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITHOUT_NDG",
+            "target": "PRODUCT_CHECKS_WITHOUT_NDG",
+            "event": "COMMON_CHECK_OK"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CCC_WITHOUT_NDG",
+            "target": "COMMON_CUSTOMER_CHECKS_KO",
+            "event": "COMMON_CHECK_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "COMMON_CUSTOMER_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITHOUT_NDG",
+            "target": "PRODUCT_CHECKS_KO",
+            "event": "PRODUCT_CHECKS_END",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PRODUCT_CHECKS_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITHOUT_NDG",
+            "target": "PRODUCT_CHECKS_ERROR_WITHOUT_NDG",
+            "event": "PRODUCT_CHECKS_ERROR"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_ERROR_WITHOUT_NDG",
+            "target": "PRODUCT_CHECKS_WITHOUT_NDG",
+            "event": "TO_PC_ERROR_PRODUCT_CHECKS"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITHOUT_NDG",
+            "target": "PRODUCT_CHECKS_SUSPENSIVE",
+            "event": "PRODUCT_CHECKS_SUSPENSIVE",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRODUCT_CHECKS_WITHOUT_NDG",
+            "target": "BOOST/ONB",
+            "event": "PRODUCT_CHECKS_WITHOUT_NDG_BOOST/ONB"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "START_CREDIT_CORE",
+            "target": "BUREAU_CREDIT_CORE",
+            "event": "START_CREDIT_CORE_OK",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CREDIT_BUREAU_CALLED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BUREAU_CREDIT_CORE",
+            "target": "INCOME",
+            "event": "BUREAU_CREDIT_CORE_OK",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "INCOME_DATA_STARTED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BUREAU_CREDIT_CORE_RESULT",
+            "target": "BUREAU_KO",
+            "event": "BUREAU_KO_END",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/negative-resolution",
+                    "body": "{}"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CREDIT_BUREAU_KO",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "INCOME",
+            "target": "BUREAU_CREDIT_CORE_RESULT",
+            "event": "INCOME_BUREAU_CREDIT_CORE_RESULT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "INCOME_DATA_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BUREAU_CREDIT_CORE_RESULT",
+            "target": "CREDIT_LINE_CREDIT_CORE",
+            "event": "EVT_BBBR_CLCC"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_LINE_CREDIT_CORE",
+            "target": "APPL_FORM",
+            "event": "CREDIT_LINE_CREDIT_CORE_APPL_FORM",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "APPLICATION_FORM_STARTED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_LINE_CREDIT_CORE",
+            "target": "OVER_INDEB",
+            "event": "CREDIT_LINE_CREDIT_CORE_OVER_INDEB",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "OVER_INDEBTEDNESS_START",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "OVER_INDEB",
+            "target": "APPL_FORM",
+            "event": "OVER_INDEB_APPL_FORM",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "OVER_INDEBTEDNESS_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "APPLICATION_FORM_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_LINE_CREDIT_CORE_RESULT",
+            "target": "RATING_CREDIT_CORE",
+            "event": "EVT_CLCCR_RATING"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "RATING_CREDIT_CORE",
+            "target": "RATING_CREDIT_CORE",
+            "event": "RECOVER_RATING_CREDIT_CORE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_LINE_CREDIT_CORE",
+            "target": "CREDIT_LINE_CREDIT_CORE",
+            "event": "RECOVER_CREDIT_LINE_CREDIT_CORE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "APPL_FORM",
+            "target": "CREDIT_LINE_CREDIT_CORE_RESULT",
+            "event": "APPL_FORM_CREDIT_LINE_CREDIT_CORE_RESULT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "APPLICATION_FORM_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "RATING_CREDIT_CORE",
+            "target": "CREATING_CPI",
+            "event": "RATING_CREDIT_CORE_CREATE_CPI",
+            "actions": [
+                {
+                    "type": "RequestForStartChildAction",
+                    "productName": "CPI",
+                    "delegateControl": true
+                },
+                {
+                    "type": "EventToChildrenAction",
+                    "event": "EVT_VERIFY",
+                    "workflowId": "consumer_finance_cpi"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "RATING_CREDIT_CORE",
+            "target": "RATING_CREDIT_CORE_RESULT",
+            "event": "RATING_CREDIT_CORE_RATING_CREDIT_CORE_RESULT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "RATING_CREDIT_CORE_RESULT",
+            "target": "CREDIT_CREDIT_CORE",
+            "event": "RATING_CREDIT_CORE_CREDIT_CREDIT_CORE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "RATING_CREDIT_CORE_RESULT",
+            "target": "RATING_CREDIT_CORE_KO",
+            "event": "RATING_RESULT_RATING_KO",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/withdraw",
+                    "body": "{}"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "RATING_CREDIT_CORE_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_CREDIT_CORE",
+            "target": "CREDIT_CREDIT_CORE_RESULT",
+            "event": "CCC_RESULT_OK"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREATING_CPI",
+            "target": "CPI_SUMMARY",
+            "event": "VERIFY_CPI_OK",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CPI_SUMMARY",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREATING_CPI",
+            "target": "VERIFY_CPI_KO",
+            "event": "VERIFY_CPI_KO"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "VERIFY_CPI_KO",
+            "target": "RATING_CREDIT_CORE_RESULT",
+            "event": "REMOVE_CPI"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CPI_SUMMARY",
+            "target": "DEMAND_AND_NEEDS",
+            "event": "CPI_SUMMARY_DEMAND_AND_NEEDS",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "D_AND_N_STARTED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DEMAND_AND_NEEDS",
+            "target": "CPI_SUMMARY",
+            "event": "DEMAND_AND_NEEDS_CPI_SUMMARY",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CPI_SUMMARY",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DEMAND_AND_NEEDS",
+            "target": "RATING_CREDIT_CORE_RESULT",
+            "event": "DN_INCOHERENT_REMOVE_CPI"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DEMAND_AND_NEEDS",
+            "target": "SEND_DN_WITHDRAWN",
+            "event": "DN_INCOHERENT_KO_END",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "D_AND_N_KO",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{ \"ndg\": \"##NDG##\", \"dossierId\": \"$$DOSSIER_ID$$\", \"category\": \"DN_WITHDRAWN\", \"mailTemplateId\": \"CF_DN_NEGATIVE_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_DN_WITHDRAWN",
+            "target": "DN_INCOHERENT_KO",
+            "event": "PRECONTRACT_SENT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DN_INCOHERENT_KO",
+            "target": "RATING_CREDIT_CORE_RESULT",
+            "event": "DN_INCOHERENT_REMOVE_CPI"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CPI_SUMMARY",
+            "target": "RATING_CREDIT_CORE_RESULT",
+            "event": "DN_INCOHERENT_REMOVE_CPI"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DEMAND_AND_NEEDS",
+            "target": "RATING_CREDIT_CORE_RESULT",
+            "event": "DEMAND_AND_NEEDS_RATING_CREDIT_CORE_RESULT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "D_AND_N_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "PRICE_QUOTATION",
+            "event": "RECALC_PRICE_QUOTATION",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/generate",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"deleteOldDocument\": true }"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION_AFTER_QM",
+            "target": "SEND_PRECONTRACT_AFTER_QM",
+            "event": "GET_ACCOUNTS_AML",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/complete",
+                    "body": "{}"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION_AFTER_QM",
+            "target": "SEND_PRECONTRACT_AFTER_QM",
+            "event": "GET_ACCOUNTS_SELECT_ACCOUNT",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/complete",
+                    "body": "{}"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION_AFTER_QM",
+            "target": "SEND_PRECONTRACT_AFTER_QM",
+            "event": "PRICE_QUOTATION_PROOF_OF_INCOME",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/complete",
+                    "body": "{}"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_PRECONTRACT_AFTER_QM",
+            "target": "SIGNATURE_SELECT",
+            "event": "PRECONTRACT_SENT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRECONTRACT_SENT",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_CREDIT_CORE_RESULT",
+            "target": "PRICE_QUOTATION",
+            "event": "CREDIT_CREDIT_CORE_PRICE_QUOTATION",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/generate",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"deleteOldDocument\": true }"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRICE_QUOTATION",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CREDIT_CREDIT_CORE_RESULT",
+            "target": "COUNTER_OFFER",
+            "event": "COUNTER_OFFER",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "COUNTER_OFFER_PROPOSED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "COUNTER_OFFER",
+            "target": "PRICE_QUOTATION",
+            "event": "COUNTER_OFFER_PRICE_QUOTATION",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/generate",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"deleteOldDocument\": true }"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "LOAN_OFFER_CREATED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION",
+            "target": "SEND_PRECONTRACT_KO",
+            "event": "CREDIT_PRICE_QUOTATION_KO",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_PRECONTRACT_KO",
+            "target": "PRICE_QUOTATION_KO",
+            "event": "PRECONTRACT_SENT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CREDIT_EVALUATION_KO",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION",
+            "target": "SEND_PRECONTRACT_ABANDON",
+            "event": "PRICE_QUOTATION_ABANDON",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_PRECONTRACT_ABANDON",
+            "target": "PRICE_QUOTATION",
+            "event": "PRECONTRACT_SENT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION",
+            "target": "SEND_PRECONTRACT_POI",
+            "event": "PRICE_QUOTATION_PROOF_OF_INCOME",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "LOAN_OFFER_CREATED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_PRECONTRACT_POI",
+            "target": "PROOF_OF_INCOME",
+            "event": "PRECONTRACT_SENT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRECONTRACT_SENT",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "POI_REQUESTED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION",
+            "target": "SEND_PRECONTRACT_SELECT_ACCOUNT",
+            "event": "GET_ACCOUNTS_SELECT_ACCOUNT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "LOAN_OFFER_CREATED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_PRECONTRACT_SELECT_ACCOUNT",
+            "target": "SELECT_ACCOUNT",
+            "event": "PRECONTRACT_SENT",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRECONTRACT_SENT",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION",
+            "target": "SEND_PRECONTRACT_AML",
+            "event": "GET_ACCOUNTS_AML",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "LOAN_OFFER_CREATED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/send",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"mailTemplateId\":\"IL_PRECONTRATTO_CFN_EMAIL\"}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_PRECONTRACT_AML",
+            "target": "AML",
+            "event": "PRECONTRACT_SENT",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/document/$$DOSSIER_ID$$/documents-generate",
+                    "body": "[\"CTR\"]"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRECONTRACT_SENT",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PROOF_OF_INCOME",
+            "target": "PSD2_HANDOVER_START",
+            "event": "POI_PSD2_HANDOVER_START",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PSD2_STARTED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_HANDOVER_START",
+            "target": "PSD2",
+            "event": "NEXT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PROOF_OF_INCOME",
+            "target": "DOCUMENT_UPLOAD_RECAP",
+            "event": "POI_PS_UPLOAD_HANDOVER_START",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PS_UPLOAD_START",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_CHECK",
+            "target": "DOCUMENT_UPLOAD_RECAP",
+            "event": "POI_PS_UPLOAD_HANDOVER_START",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PS_UPLOAD_START",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PROOF_OF_INCOME",
+            "target": "AML",
+            "event": "GET_ACCOUNTS_AML",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/document/$$DOSSIER_ID$$/documents-generate",
+                    "body": "[\"CTR\"]"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PROOF_OF_INCOME",
+            "target": "SELECT_ACCOUNT",
+            "event": "GET_ACCOUNTS_SELECT_ACCOUNT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECK_POI",
+            "target": "AML",
+            "event": "GET_ACCOUNTS_AML",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/document/$$DOSSIER_ID$$/documents-generate",
+                    "body": "[\"CTR\"]"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2",
+            "target": "PSD2_CHECK",
+            "event": "PSD2_CHECK"
+        },
+        {
+            "type": "InternalTransition",
+            "source": "PSD2_CHECK",
+            "event": "PSD2_CHECK"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_CHECK",
+            "target": "PSD2_INCONSISTENT",
+            "event": "PSD2_CHECK_INCONSISTENT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_CHECK",
+            "target": "PRICE_QUOTATION_KO",
+            "event": "CREDIT_PRICE_QUOTATION_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "CREDIT_EVALUATION_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_CHECK",
+            "target": "OK_PSD2_HANDOVER_END",
+            "event": "OK_PSD2_HANDOVER_END",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PSD2_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_INCONSISTENT",
+            "target": "PSD2_INCONSISTENT_HANDOVER_END",
+            "event": "PSD2_INCONSISTENT_HANDOVER_END"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_INCONSISTENT_HANDOVER_END",
+            "target": "DOCUMENT_UPLOAD_RECAP",
+            "event": "HANDOVER_COMPLETED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PS_UPLOAD_START",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PSD2_CHECK",
+            "target": "KO_PSD2_HANDOVER_END",
+            "event": "PSD2_KO"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "OK_PSD2_HANDOVER_END",
+            "target": "GET_ACCOUNTS",
+            "event": "HANDOVER_COMPLETED",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/bank-account/retrieve",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "GET_ACCOUNTS",
+            "target": "SELECT_ACCOUNT",
+            "event": "GET_ACCOUNTS_SELECT_ACCOUNT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "GET_ACCOUNTS",
+            "target": "AML",
+            "event": "GET_ACCOUNTS_AML",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/document/$$DOSSIER_ID$$/documents-generate",
+                    "body": "[\"CTR\"]"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "KO_PSD2_HANDOVER_END",
+            "target": "PROOF_OF_INCOME",
+            "event": "HANDOVER_COMPLETED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECK_POI",
+            "target": "PRICE_QUOTATION_KO",
+            "event": "CREDIT_RESULT_CREDIT_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "CREDIT_EVALUATION_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECK_POI_POST_SIGN",
+            "target": "PRICE_QUOTATION_KO",
+            "event": "CREDIT_RESULT_CREDIT_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "CREDIT_EVALUATION_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOCUMENT_UPLOAD_RECAP",
+            "target": "CHECK_POI",
+            "event": "UPLOAD_COMPLETE",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "DOCUMENT_UPLOAD_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/send-proof-of-income",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOCUMENT_UPLOAD_RECAP_POST_SIGN",
+            "target": "CHECK_POI_POST_SIGN",
+            "event": "UPLOAD_COMPLETE",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "DOCUMENT_UPLOAD_OK_POST_SIGN",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/send-proof-of-income",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOC_OR_DISBURSEMENT",
+            "target": "BACK_OFFICE_POST_SIGN",
+            "event": "HANDLING_DOCUMENT_STATUS",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "DOCUMENT_UPLOAD_TO_BACK_OFFICE"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "BACK_OFFICE"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "BACK_OFFICE_POST_SIGN",
+            "target": "CHECK_POI_POST_SIGN",
+            "event": "BACK_OFFICE_COMPLETED",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "method": "POST",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/send-proof-of-income",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}",
+                    "expectEvent": false,
+                    "expectResponse": false,
+                    "forwardOmcJwt": true
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECK_POI",
+            "target": "GET_ACCOUNTS",
+            "event": "CHECK_POI_OK",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/bank-account/retrieve",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOCUMENT_UPLOAD_RECAP",
+            "target": "GET_ACCOUNTS",
+            "event": "UPLOAD_SKIP",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/bank-account/retrieve",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOCUMENT_UPLOAD_RECAP",
+            "target": "GET_ACCOUNTS",
+            "event": "HANDLING_DOCUMENT_STATUS",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/bank-account/retrieve",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHECK_POI_POST_SIGN",
+            "target": "DISBURSEMENT_INIT",
+            "event": "CHECK_POI_OK"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SELECT_ACCOUNT",
+            "target": "AML",
+            "event": "SELECT_ACCOUNT_AML",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/document/$$DOSSIER_ID$$/documents-generate",
+                    "body": "[\"CTR\"]"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "ACCOUNT_SELECTED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOCUMENT_UPLOAD_RECAP",
+            "target": "PRICE_QUOTATION_KO",
+            "event": "DOCUMENT_UPLOAD_RECAP_PRICE_QUOTATION_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CREDIT_EVALUATION_KO",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOCUMENT_UPLOAD_RECAP_POST_SIGN",
+            "target": "PRICE_QUOTATION_KO",
+            "event": "DOCUMENT_UPLOAD_RECAP_PRICE_QUOTATION_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CREDIT_EVALUATION_KO",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML",
+            "target": "PEP_KO",
+            "event": "SIMULATION_WITH_NDG_WITH_CPI_PEP_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PEP_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML",
+            "target": "AML_KO_END",
+            "event": "AML_AML_KO_END",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/withdraw",
+                    "body": "{}"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "AML_KO",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML",
+            "target": "AML_KO_MA",
+            "event": "AML_AML_KO_MA",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "AML_KO_MA",
+            "event": "SUSPENSIVE_TASK_RETRY",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "PROCESSING"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PROCESSING"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "AML_KO_MA",
+            "event": "AML_CHECK_WIP",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML_KO_MA",
+            "target": "AML_KO_END",
+            "event": "AML_CHECK_KO",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/withdraw",
+                    "body": "{}"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "AML_KO",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML_KO_MA",
+            "target": "SIGNATURE_SELECT",
+            "event": "AML_CHECK_OK",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/complete",
+                    "body": "{}"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "AML_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML_KO_MA",
+            "target": "CPI_QUESTIONNAIRE",
+            "event": "AML_CHECK_OK_WITH_CPI",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "AML_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML",
+            "target": "CPI_QUESTIONNAIRE",
+            "event": "AML_CPI_QUESTIONNAIRE",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "AML_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CPI_QUESTIONNAIRE",
+            "target": "CPI_QUESTIONNAIRE",
+            "event": "RECOVER_CPI_QUESTIONNAIRE",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/survey/health/analyze-status"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "CPI_QUESTIONNAIRE",
+            "event": "AML_CPI_QUESTIONNAIRE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CPI_QUESTIONNAIRE",
+            "target": "CPI_BENEFICIARY",
+            "event": "CPI_QUESTIONNAIRE_CPI_BENEFICIARY",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "QM_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CPI_QUESTIONNAIRE",
+            "target": "SEND_MEDIC_WITHDRAWN",
+            "event": "CPI_QUESTIONNAIRE_HS_VALIDATION_ERROR",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "QM_ERROR",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{ \"ndg\": \"##NDG##\", \"dossierId\": \"$$DOSSIER_ID$$\", \"category\": \"MEDIC_WITHDRAWN\", \"mailTemplateId\": \"CF_QM_NEGATIVE_EMAIL\" }"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SEND_MEDIC_WITHDRAWN",
+            "target": "HS_VALIDATION_ERROR",
+            "event": "PRECONTRACT_SENT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "HS_VALIDATION_ERROR",
+            "target": "CPI_BENEFICIARY",
+            "event": "CPI_QUESTIONNAIRE_CPI_BENEFICIARY",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "QM_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "HS_VALIDATION_ERROR",
+            "target": "HS_VALIDATION_BLOCK",
+            "event": "CPI_QUESTIONNAIRE_HS_VALIDATION_BLOCK",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "QM_BLOCK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CPI_QUESTIONNAIRE",
+            "target": "PRICE_QUOTATION_AFTER_QM",
+            "event": "HS_INVALID_REMOVE_CPI",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/generate",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"deleteOldDocument\": true }"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "HS_VALIDATION_BLOCK",
+            "target": "PRICE_QUOTATION_AFTER_QM",
+            "event": "HS_INVALID_REMOVE_CPI",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/generate",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"deleteOldDocument\": true }"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "AML",
+            "target": "SIGNATURE_SELECT",
+            "event": "AML_SIGN",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "AML_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/complete",
+                    "body": "{}"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "START_SIGN",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CPI_BENEFICIARY",
+            "target": "START_BIN",
+            "event": "CPI_BENEFICIARY_SIGN",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-credit-core.ns-old-be-consumerfinance.svc.cluster.local:8080/credit-core/v1/credit-core/$$DOSSIER_ID$$/complete",
+                    "body": "{}"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOC_OR_DISBURSEMENT",
+            "target": "SIGNATURE_PAPER_UPLOAD_RECAP",
+            "event": "SIGNATURE_PAPER_UPLOAD"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE_PAPER_UPLOAD_RECAP",
+            "target": "DOC_OR_DISBURSEMENT",
+            "event": "UPLOAD_COMPLETE",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CONTRACT_SIGNED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOC_OR_DISBURSEMENT",
+            "target": "DOCUMENT_UPLOAD_RECAP_POST_SIGN",
+            "event": "POI_UPLOAD_POST_SIGN_HANDOVER_START",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "PUT",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-document-upload.ns-omn-be-omnifoundation.svc.cluster.local:8080/documentupload/v1/document/$$DOSSIER_ID$$/options",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{ \"phaseName\" : \"DOC_UPLOAD\", \"skippable\" : false, \"status\" : \"ACTIVE\", \"replace\" : false }"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PS_UPLOAD_START",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DOC_OR_DISBURSEMENT",
+            "target": "DISBURSEMENT_INIT",
+            "event": "START_DISBURSEMENT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_INIT",
+            "target": "DISBURSEMENT_WAITING",
+            "event": "DISBURSEMENT_INIT_DISBURSEMENT_WAITING",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "DISBURSEMENT_WAITING"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_WAITING",
+            "target": "DISBURSEMENT_POSTPONED",
+            "event": "RECOVER_DISBURSEMENT_INIT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_INIT",
+            "target": "DISBURSEMENT_INIT",
+            "event": "RECOVER_DISBURSEMENT_INIT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_WAITING",
+            "target": "DISBURSEMENT_KO",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "DISBURSEMENT_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_WAITING",
+            "target": "DISBURSEMENT_SUSPENDED",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_SUSPENDED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SUSPENDED"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "SUSPENDED"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "DISBURSEMENT_SUSPENDED",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_SUSPENDED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_WAITING",
+            "target": "DISBURSEMENT_POSTPONED",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_POSTPONED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "DISBURSEMENT_POSTPONED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "DISBURSEMENT_POSTPONED",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_POSTPONED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_WAITING",
+            "target": "DISBURSEMENT_OK_INSTANT",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_OK_INSTANT"
+        },
+        {
+            "type": "InternalTransition",
+            "source": "DISBURSEMENT_OK_INSTANT",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_OK_INSTANT"
+        },
+        {
+            "type": "InternalTransition",
+            "source": "BROADCAST_COMPLETED",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_OK_SEPA"
+        },
+        {
+            "type": "InternalTransition",
+            "source": "BROADCAST_COMPLETED",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_OK_INSTANT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_WAITING",
+            "target": "DISBURSEMENT_OK_SEPA",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_OK_SEPA",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "DISBURSEMENT_OK_SEPA",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "InternalTransition",
+            "source": "DISBURSEMENT_OK_SEPA",
+            "event": "DISBURSEMENT_WAITING_DISBURSEMENT_OK_SEPA"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE_SELECT",
+            "target": "SIGNATURE",
+            "event": "SIGNATURE_WO_CERTIFICATE_SELECTED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE_SELECT",
+            "target": "CERTIFICATE_BULLET",
+            "event": "SIGNATURE_SELECTED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE_SELECT",
+            "target": "SIGNATURE_START_HANDOVER",
+            "event": "SIGNATURE_HANDOVER_SELECTED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE_START_HANDOVER",
+            "target": "CERTIFICATE_BULLET",
+            "event": "NEXT"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CERTIFICATE_BULLET",
+            "target": "SIGNATURE",
+            "event": "CERTIFICATE_OK"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE",
+            "target": "CHILDREN_SIGNATURE",
+            "event": "SIGNATURE_OK",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CONTRACT_SIGNED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHILDREN_SIGNATURE",
+            "target": "POST_SIGNATURE_FAIL",
+            "event": "KO_HANDLING_SIGN",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "POST_SIGNATURE_FAIL"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE",
+            "target": "END_HANDOVER_OK_SIGNATURE",
+            "event": "SIGNATURE_OK_HANDOVER"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "END_HANDOVER_OK_SIGNATURE",
+            "target": "CHILDREN_SIGNATURE",
+            "event": "HANDOVER_COMPLETED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "CONTRACT_SIGNED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/document/archive",
+                    "body": "{}",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "method": "POST"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "ARCHIVED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE",
+            "target": "END_HANDOVER_KO_SIGNATURE",
+            "event": "SIGNATURE_KO_HANDOVER"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "END_HANDOVER_KO_SIGNATURE",
+            "target": "SIGNATURE_FAIL",
+            "event": "HANDOVER_COMPLETED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SIGNATURE_FAIL"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE",
+            "target": "END_HANDOVER_CONTINUE_SIGNATURE",
+            "event": "SIGNATURE_CONTINUE_HANDOVER"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "END_HANDOVER_CONTINUE_SIGNATURE",
+            "target": "SIGNATURE",
+            "event": "HANDOVER_COMPLETED"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHILDREN_SIGNATURE",
+            "target": "DOC_OR_DISBURSEMENT",
+            "event": "POST_CHILDREN_SIGNATURE_OK",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/$$DOSSIER_ID$$/document/archive",
+                    "body": "{}",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "method": "POST"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "ARCHIVED"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIGNATURE",
+            "target": "SIGNATURE_FAIL",
+            "event": "SIGNATURE_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "SIGNATURE_FAIL"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "START_BIN",
+            "target": "SIGNATURE_SELECT",
+            "event": "EVT_CPI_BIN_CREATED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "START_SIGN",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_WAITING",
+            "target": "BROADCAST_COMPLETED",
+            "event": "FINALIZE",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "DISBURSEMENT_OK",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_OK_INSTANT",
+            "target": "BROADCAST_COMPLETED",
+            "event": "FINALIZE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_OK_SEPA",
+            "target": "BROADCAST_COMPLETED",
+            "event": "FINALIZE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_POSTPONED",
+            "target": "BROADCAST_COMPLETED",
+            "event": "FINALIZE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "DISBURSEMENT_SUSPENDED",
+            "target": "BROADCAST_COMPLETED",
+            "event": "FINALIZE",
+            "actions": [
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "PROCESSING"
+                },
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PROCESSING"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION",
+            "target": "WAITING_FOR_DEROGATION_APPROVAL",
+            "event": "WAIT_FOR_DEROGATION_APPROVAL",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRICING_UNDER_APPROVAL",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "WAITING_FOR_DEROGATION_APPROVAL",
+            "target": "PRICE_QUOTATION",
+            "event": "DEROGATION_TREATED",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRICING_APPROVAL_REQUEST_FINALIZED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "WAITING_FOR_DEROGATION_APPROVAL",
+            "target": "PRICE_QUOTATION",
+            "event": "RECALC_PRICE_QUOTATION",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "PRICING_APPROVAL_REQUEST_FINALIZED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-omnichannel-fnd-dossier.ns-omn-be-omnifoundation.svc.cluster.local:8080/dossier/v1/dossier/precontract/generate",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "body": "{\"ndg\":\"##NDG##\",\"dossierId\":\"$$DOSSIER_ID$$\", \"deleteOldDocument\": true }"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "PRICE_QUOTATION",
+            "target": "SIMULATION_CHANGE_PLAN",
+            "event": "CHANGE_PLAN"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_CHANGE_PLAN",
+            "target": "PRICE_QUOTATION",
+            "event": "RECOVER_SIMULATION_CHANGE_PLAN"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_CHANGE_PLAN",
+            "target": "CHANGE_PLAN_RESET",
+            "event": "SIMULATION_WITH_NDG_WITH_CPI_BOOST/ONB",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/change-plan/reset"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_CHANGE_PLAN",
+            "target": "CHANGE_PLAN_RESET",
+            "event": "SIMULATION_WITH_NDG_BOOST/ONB",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/change-plan/reset"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_CHANGE_PLAN",
+            "target": "CHANGE_PLAN_RESET",
+            "event": "TO_IDENTIFICATION_WITHOUT_CPI",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "update": "SIMULATION_COMPLETED",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080"
+                },
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": true,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/change-plan/reset"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "SIMULATION_CHANGE_PLAN",
+            "target": "PEP_KO",
+            "event": "SIMULATION_WITH_NDG_WITH_CPI_PEP_KO",
+            "actions": [
+                {
+                    "type": "UpdateProductDossierAction",
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080",
+                    "update": "PEP_KO"
+                },
+                {
+                    "type": "UpdateDossierAction",
+                    "update": "COMPLETED_IN_ERROR"
+                }
+            ]
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHANGE_PLAN_RESET",
+            "target": "START_CREDIT_CORE",
+            "event": "RESET_DONE"
+        },
+        {
+            "type": "ExternalTransition",
+            "source": "CHANGE_PLAN_RESET",
+            "target": "START_CREDIT_CORE",
+            "event": "RECOVER_CHANGE_PLAN_RESET",
+            "actions": [
+                {
+                    "type": "HttpRequestAction",
+                    "expectResponse": false,
+                    "method": "POST",
+                    "forwardOmcJwt": true,
+                    "url": "http://svc-consumer-finance-dossier.ns-old-be-consumerfinance.svc.cluster.local:8080/cfn/v1/consumer-finance/$$DOSSIER_ID$$/change-plan/reset"
+                }
+            ]
+        }
+    ],
+    "version": 3,
+    "deprecated": false
+}
