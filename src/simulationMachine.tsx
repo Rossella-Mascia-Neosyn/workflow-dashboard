@@ -84,7 +84,6 @@ export const simulationMachine = simModel.createMachine(
               // so we pass it explicitly here
               targetWindow: window.opener || window.parent,
             });
-
             onReceive((event) => {
               if (event.type === 'xstate.event') {
                 receiver.send({
@@ -142,7 +141,7 @@ export const simulationMachine = simModel.createMachine(
               const service = interpret(machine, { devTools: true });
               rootServices.add(service);
               serviceMap.set(service.sessionId, service);
-
+              console.log('qui')
               sendBack(
                 simModel.events['SERVICE.REGISTER']({
                   sessionId: service.sessionId,
@@ -251,10 +250,12 @@ export const simulationMachine = simModel.createMachine(
                 if (!service) {
                   return;
                 }
-                //@ts-ignore
-                draft[e.sessionId]!.state = service.machine.resolveState(
-                  e.state,
-                );
+
+                console.log(e, 'e state');
+
+                // draft[e.sessionId]!.state = service.machine.resolveState(
+                //   e.state,
+                // );
               }),
             events: (ctx, e) => {
               return produce(ctx.events, (draft) => {

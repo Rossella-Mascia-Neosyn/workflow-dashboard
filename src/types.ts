@@ -23,7 +23,28 @@ export type AnyState = State<any, any>;
 
 export type SourceProvider = 'gist' | 'registry';
 
-export interface SourceRegistryData {
+export type Scalars = {
+  ID: string;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+  Datetime: any;
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSONObject: any;
+};
+export type SourceFile = {
+  __typename?: 'SourceFile';
+  id: Scalars['String'];
+  text: Scalars['String'];
+};
+
+export type SourceFileFragment = (
+  { __typename?: 'SourceFile' }
+  & Pick<SourceFile, 'id' | 'text'>
+);
+
+export interface SourceRegistryData extends SourceFileFragment {
   // we can't trust SSR data to be accurate because at the moment we can use authenticated user during SSR
   // so properties like `youHaveLiked` might be initially inaccurate
   dataSource: 'ssr' | 'client';

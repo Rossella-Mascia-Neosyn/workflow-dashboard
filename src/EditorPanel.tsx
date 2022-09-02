@@ -11,6 +11,7 @@ import { ActorRefFrom, assign, createMachine, DoneInvokeEvent, send, spawn } fro
 import { createModel } from 'xstate/lib/model';
 // import { useAuth } from './authContext';
 import SelectThemes from './components/SelectThemes/SelectThemes';
+import { useGlobal } from './context/globalContext';
 import EditorWithXStateImports from './EditorWithXStateImports';
 import { handlerRemap } from './myUtils/handlerRemap';
 import { notifMachine } from './notificationMachine';
@@ -296,14 +297,14 @@ export const EditorPanel: React.FC<{
   onChange: (machine: AnyStateMachine[]) => void;
   onChangedCodeValue: (code: string) => void;
 }> = ({ onChange, onChangedCodeValue }) => {
-  // const authService = useAuth();
-  // const sourceService = useSelector(
-  //   authService,
-  //   (state) => state.context.sourceRef!,
-  // );
-  // const [sourceState] = useActor(sourceService);
+  const globalService = useGlobal();
+  const sourceService = useSelector(
+    globalService,
+    (state) => state.context.sourceRef!,
+  );
+  const [sourceState] = useActor(sourceService);
   //@ts-ignore
-  // const value = getEditorValue(sourceState);
+  const value = getEditorValue(sourceState);
 
   const [current, send] = useMachine(editorPanelMachine, {
     actions: {
@@ -316,8 +317,8 @@ export const EditorPanel: React.FC<{
     },
     context: {
       ...editorPanelModel.initialContext,
-      code: JSON.stringify(BaseJson, null, 2),
-      // sourceRef: sourceService,
+      code: value,
+      sourceRef: sourceService,
     },
   });
   const isVisualizing = current.hasTag('visualizing');
@@ -335,7 +336,7 @@ export const EditorPanel: React.FC<{
           {/* This extra div acts as a placeholder that is supposed to stretch while EditorWithXStateImports lazy-loads (thanks to `1fr` on the grid) */}
           {/* <div style={{ minHeight: 0, minWidth: 0 }}> */}
           <EditorWithXStateImports
-            value={JSON.stringify(BaseJson, null, 2)}
+            value={value}
             onMount={(standaloneEditor, monaco) => {
               send({
                 type: 'EDITOR_READY',

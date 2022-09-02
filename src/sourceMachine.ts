@@ -25,6 +25,8 @@ import { choose } from 'xstate/lib/actions';
 import BaseJson from './__tests__/jsonTest/init/baseInit.json';
 import ComplexJson from './__tests__/jsonTest/init/moreComplexInit.json';
 import ChildeJson from './__tests__/jsonTest/init/childrenInit.json';
+import { useGlobal } from './context/globalContext';
+import { GlobalMachine } from './context/globalMachine';
 
 const initialMachineCode = JSON.stringify(ChildeJson);
 
@@ -91,8 +93,8 @@ export const makeSourceMachine = (params: {
       preserveActionOrder: true,
       context: {
         ...sourceModel.initialContext,
-        sourceRawContent: 'ciao',
-        sourceID: '1'
+        sourceRawContent: params.sourceRegistryData?.text || null,
+        sourceID: params.sourceRegistryData?.id || null
       },
       entry: assign({ notifRef: () => spawn(notifMachine) }),
       states: {
@@ -268,31 +270,6 @@ export const makeSourceMachine = (params: {
               ],
             },
           },
-          initial: 'checking_if_in_local_storage',
-          states: {
-            checking_if_in_local_storage: {
-              always: [
-                {
-                  cond: 'hasLocalStorageCachedSource',
-                  target: 'has_cached_source',
-                },
-                {
-                  target: 'no_cached_source',
-                },
-              ],
-            },
-            has_cached_source: {
-              entry: ['getLocalStorageCachedSource'],
-            },
-            no_cached_source: {
-              tags: ['canShowWelcomeMessage', 'noCachedSource'],
-              on: {
-                EXAMPLE_REQUESTED: {
-                  actions: 'assignExampleMachineToContext',
-                },
-              },
-            },
-          },
         },
         creating: {
           id: 'creating',
@@ -425,6 +402,22 @@ export const makeSourceMachine = (params: {
   );
 };
 
+export const getSourceActor = (state: StateFrom<GlobalMachine>) => state.context.sourceRef!;
+
+export const useSourceActor = () => {
+  const globalService = useGlobal();
+  const sourceService = useSelector(globalService, getSourceActor);
+
+  return useActor(sourceService!);
+};
+
+export const useSourceRegistryData = () => {
+  const sourceService = useSelector(useGlobal(), getSourceActor);
+  return useSelector(
+    sourceService,
+    (state) => state.context.sourceRegistryData,
+  );
+};
 
 export const getEditorValue = (state: SourceMachineState) => {
   return state.context.sourceRawContent || initialMachineCode;

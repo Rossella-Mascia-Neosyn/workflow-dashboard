@@ -447,7 +447,6 @@ export const CanvasContainer: React.FC<{ panModeEnabled: boolean; children: Reac
     };
 
     const canvasEl = canvasRef.current;
-    debugger;
     canvasEl.addEventListener('wheel', onCanvasWheel);
     return () => {
       canvasEl.removeEventListener('wheel', onCanvasWheel);
