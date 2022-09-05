@@ -38,7 +38,6 @@ export const createGlobalMachine = (params: {
                 initializing: {
                     entry: [
                         globalModel.assign((ctx) => {
-                            console.log(ctx, 'ctx global')
                             return {
                                 sourceRef: spawn(
                                     makeSourceMachine({
