@@ -50,7 +50,7 @@ function App() {
                 // as="main"
                 display="grid"
                 gridTemplateColumns="1fr auto"
-                gridTemplateAreas="panels"
+                gridTemplateAreas="canvas panels"
                 height="100vh"
               >
                 <CanvasProvider value={canvasService}>

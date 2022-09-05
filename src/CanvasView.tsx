@@ -37,15 +37,11 @@ type CanvasViewProps = {
 }
 
 export const CanvasView: React.FC<CanvasViewProps> = ({ handlePanelView, isShowPanel, handleDarkMode, isDarkMode }) => {
-  // TODO: refactor this so an event can be explicitly sent to a machine
-  // it isn't straightforward to do at the moment cause the target machine lives in a child component
   const [panModeEnabled, setPanModeEnabled] = React.useState(false);
-  // const embed = useEmbed();
   const simService = useSimulation();
   const canvasService = useCanvas();
 
   const machine = useSelector(simService, (state) => {
-    console.log(state.context.currentSessionId, 'state.context.currentSessionId')
     return state.context.currentSessionId
       ? state.context.serviceDataMap[state.context.currentSessionId!]?.machine
       : undefined;
@@ -60,16 +56,10 @@ export const CanvasView: React.FC<CanvasViewProps> = ({ handlePanelView, isShowP
     [machine],
   );
 
-  console.log(digraph, 'digraph')
-
   const shouldEnableZoomOutButton = true;
-
   const shouldEnableZoomInButton = true;
-
   const simulationMode = useSimulationMode();
-
   const showControls = true;
-
   const showZoomButtonsInEmbed = true;
   const showPanButtonInEmbed = true;
 

@@ -6,16 +6,15 @@ import React, { memo } from 'react';
 import { EditorPanel } from './EditorPanel';
 import { ResizableBox } from './ResizableBox';
 import { useSimulation } from './SimulationContext';
-// import { useSourceActor } from './sourceMachine';
+import { useSourceActor } from './sourceMachine';
 
 const PanelsView = (props: BoxProps) => {
   const simService = useSimulation();
-  // const [sourceState, sendToSourceService] = useSourceActor();
+  const [sourceState, sendToSourceService] = useSourceActor();
 
   return (
     <ResizableBox
       {...props}
-      gridArea="panels"
       minHeight={0}
       data-testid="panels-view"
     >
@@ -23,14 +22,13 @@ const PanelsView = (props: BoxProps) => {
         h='100%'
       >
         <EditorPanel
-          // onChangedCodeValue={(code) => {
-          //   sendToSourceService({
-          //     type: 'CODE_UPDATED',
-          //     code,
-          //     sourceID: sourceState.context.sourceID,
-          //   });
-          // }}
-          onChangedCodeValue={() => console.log('onChangedCodeValue')}
+          onChangedCodeValue={(code) => {
+            sendToSourceService({
+              type: 'CODE_UPDATED',
+              code,
+              sourceID: sourceState.context.sourceID,
+            });
+          }}
           onChange={(machines) => {
             simService.send({
               type: 'MACHINES.REGISTER',
