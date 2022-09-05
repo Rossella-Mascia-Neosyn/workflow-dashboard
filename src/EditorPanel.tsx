@@ -109,7 +109,7 @@ const editorPanelMachine = editorPanelModel.createMachine(
             on: {
               EDITOR_READY: [
                 {
-                  // cond: 'isGist',
+                  cond: 'isGist',
                   target: 'fixing_gist_imports',
                   actions: editorPanelModel.assign({
                     monacoRef: (_, e) => e.monacoRef,
@@ -177,7 +177,6 @@ const editorPanelMachine = editorPanelModel.createMachine(
         tags: ['visualizing'],
         invoke: {
           src: async (ctx) => {
-            debugger;
             let remap = handlerRemap(JSON.parse(ctx.code))
             const machine = createMachine(remap)
             let machines = [];
@@ -240,6 +239,8 @@ const editorPanelMachine = editorPanelModel.createMachine(
   },
   {
     guards: {
+      isGist: (ctx) =>
+        ctx.sourceRef.getSnapshot()!.context.sourceProvider === 'gist',
       isSyntaxError: (_, e: any) => e.data instanceof SyntaxError,
     },
     actions: {
@@ -256,7 +257,6 @@ const editorPanelMachine = editorPanelModel.createMachine(
           if (ctx.standaloneEditorRef) {
             // TODO: this Monaco API performs a side effect of clearing previous deltaDecorations while creating new decorations
             // Since XState reserves the right to assume assign actions are pure, think of a way to split the effect from assignment
-            //@ts-ignore
             const newDecorations = ctx.standaloneEditorRef.deltaDecorations(
               ctx.deltaDecorations,
               [
@@ -289,6 +289,7 @@ const editorPanelMachine = editorPanelModel.createMachine(
     },
   },
 );
+
 
 export const EditorPanel: React.FC<{
   // onSave: () => void;

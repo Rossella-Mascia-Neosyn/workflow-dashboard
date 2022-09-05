@@ -1,0 +1,48 @@
+[data-viz='eventType'] {
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1ch;
+  --viz-eventType-dot-color: transparent;
+
+  &[data-viz-keyword='done'] {
+    --viz-eventType-dot-color: #33ff99;
+  }
+  &[data-viz-keyword='error'] {
+    --viz-eventType-dot-color: #e76f4b;
+  }
+  &[data-viz-keyword='always'],
+  &[data-viz-keyword='after'] {
+    --viz-eventType-dot-color: #fff;
+  }
+
+  &[data-viz-keyword]:before {
+    content: '';
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--viz-eventType-dot-color);
+    display: block;
+  }
+}
+[data-viz='action-type-internal']{
+  margin-left: 10px;
+  background-color: rgb(255, 255, 255);
+  padding: 5px;
+  color: var(--unicredit-primary-color);
+  border-top-right-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+[data-viz='no-action-type']{
+  margin-left: 10px;
+  background-color: rgb(255, 255, 255);
+  padding: 5px;
+  color: var(--unicredit-primary-color);
+  border-top-right-radius: 1rem;
+}
+
+

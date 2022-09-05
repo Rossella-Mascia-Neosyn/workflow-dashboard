@@ -7,11 +7,6 @@ import {
   SCXML,
 } from 'xstate';
 import { AnyEventObject, assign, interpret, send, spawn } from 'xstate';
-import {
-  createWebSocketReceiver,
-  createWindowReceiver,
-  InspectReceiver,
-} from '@xstate/inspect';
 
 import { createModel } from 'xstate/lib/model';
 import { devTools } from './devInterface';
@@ -71,61 +66,6 @@ export const simulationMachine = simModel.createMachine(
       src: 'captureEventsFromChildServices',
     },
     states: {
-      inspecting: {
-        tags: 'inspecting',
-        invoke: {
-          id: 'proxy',
-          src: () => (sendBack, onReceive) => {
-            let receiver: InspectReceiver;
-            receiver = createWindowReceiver({
-              // for some random reason the `window.top` is being rewritten to `window.self`
-              // looks like maybe some webpack replacement plugin (or similar) plays tricks on us
-              // this breaks the auto-detection of the correct `targetWindow` in the `createWindowReceiver`
-              // so we pass it explicitly here
-              targetWindow: window.opener || window.parent,
-            });
-            onReceive((event) => {
-              if (event.type === 'xstate.event') {
-                receiver.send({
-                  ...event,
-                  type: 'xstate.event',
-                  event: JSON.stringify(event.event),
-                });
-              }
-            });
-
-            return receiver.subscribe((event) => {
-              switch (event.type) {
-                case 'service.register':
-                  let state = event.machine.resolveState(event.state);
-                  sendBack(
-                    simModel.events['SERVICE.REGISTER']({
-                      sessionId: event.sessionId,
-                      machine: event.machine,
-                      state,
-                      parent: event.parent,
-                      source: 'inspector',
-                    }),
-                  );
-                  break;
-                case 'service.state':
-                  sendBack(
-                    simModel.events['SERVICE.STATE'](
-                      event.sessionId,
-                      event.state,
-                    ),
-                  );
-                  break;
-                case 'service.stop':
-                  sendBack(simModel.events['SERVICE.STOP'](event.sessionId));
-                  break;
-                default:
-                  break;
-              }
-            }).unsubscribe;
-          },
-        },
-      },
       visualizing: {
         tags: 'visualizing',
         invoke: {
@@ -141,7 +81,7 @@ export const simulationMachine = simModel.createMachine(
               const service = interpret(machine, { devTools: true });
               rootServices.add(service);
               serviceMap.set(service.sessionId, service);
-              console.log('qui')
+
               sendBack(
                 simModel.events['SERVICE.REGISTER']({
                   sessionId: service.sessionId,
@@ -250,12 +190,10 @@ export const simulationMachine = simModel.createMachine(
                 if (!service) {
                   return;
                 }
-
-                console.log(e, 'e state');
-
-                // draft[e.sessionId]!.state = service.machine.resolveState(
-                //   e.state,
-                // );
+                //@ts-ignore
+                draft[e.sessionId]!.state = service.machine.resolveState(
+                  e.state,
+                );
               }),
             events: (ctx, e) => {
               return produce(ctx.events, (draft) => {

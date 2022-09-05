@@ -1,0 +1,30 @@
+[data-viz='action'] {
+  color: black;
+  display: flex;
+  flex-direction: row;
+  gap: 1ch;
+  align-items: baseline;
+  justify-content: flex-start;
+  padding: 0rem 0.5rem 0.5rem 0.5rem;
+
+  &[data-viz-action] {
+    &:before {
+      content: attr(data-viz-action) ' / ';
+      font-size: var(--chakra-fontSizes-xs);
+      text-transform: uppercase;
+      font-weight: bold;
+      opacity: 0.5;
+      display: inline-block;
+      white-space: nowrap;
+      color: black;
+    }
+  }
+}
+
+[data-viz='action-type'] {
+  font-size: var(--chakra-fontSizes-xs);
+  max-width: 15ch;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

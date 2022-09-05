@@ -1,0 +1,84 @@
+[data-viz='transition'] {
+  --viz-transition-color: var(--unicredit-primary-color);
+  display: block;
+  border-radius: 1rem;
+  background-color: var(--viz-transition-color);
+  appearance: none;
+  &[data-viz-potential] {
+    --viz-transition-color: #99C4C8;
+    opacity: 1;
+  }
+
+  > [data-viz='transition-label'] {
+    align-self: center;
+  }
+
+  &[data-is-delayed] {
+    &:not([data-viz-disabled]):after {
+      animation: move-left calc(var(--delay) * 1ms) linear;
+      z-index: 0;
+    }
+  }
+}
+
+[data-viz='transition-label'] {
+  flex-shrink: 0;
+  font-size: var(--viz-font-size-sm);
+  font-weight: bold;
+  color: #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+@keyframes move-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+[data-viz='transition-event'] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    grid-gap: 1ch;
+    gap: 1ch;
+    padding: 0 0 0 0.5rem;
+    width: 100%;
+}
+
+[data-viz='transition-guard'] {
+  padding: 0 0.5rem;
+  &:before {
+    content: '[';
+  }
+  &:after {
+    content: ']';
+  }
+}
+
+[data-viz='transition-content'] {
+  &:empty {
+    display: none;
+  }
+  padding-top:0.5rem;
+}
+
+[data-viz='transition-description'] {
+ &:empty {
+    display: none;
+  }
+  border-top: 2px solid var(--chakra-colors-whiteAlpha-300);
+  padding: 0.5rem;
+  min-width: max-content;
+  font-size: var(--chakra-fontSizes-sm);
+  text-align: left;
+  > p {
+    max-width: 10rem;
+  }
+}
